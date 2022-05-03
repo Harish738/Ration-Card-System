@@ -1,0 +1,240 @@
+----------------------------------Customer Registration---------------
+CREATE PROCEDURE customer_registration
+@cityid INT,
+@areaid INT,
+@phone_no BIGINT,
+@Family_income money,
+@card_type varchar(10),
+@Dist_id INT
+AS
+	BEGIN 
+			INSERT INTO Customer_Registration_details
+			(CITY,AREA,Phone_number,Family_Income,Card_type,Distributer_Id)
+			VALUES(@cityid, @areaid, @phone_no, @Family_income, @card_type, @Dist_id)
+	END
+GO
+
+	
+	
+
+----------------------------------Find Nearby Distributer ------------------------------------
+CREATE PROCEDURE NEAR_BY_DISTRIBUTER @Area INT, @City INT
+AS 
+BEGIN
+	SELECT Distributer_ID 
+	FROM Distributer_Registration_Details 
+	WHERE Area_ID = @Area and City_ID = @City
+END
+
+GO
+
+
+
+--------------------------------Distributer Registration--------------------
+
+CREATE PROCEDURE Distributer_registration
+@first_name VARCHAR(50),
+@last_name VARCHAR(50),
+@gender VARCHAR(25) ,
+@city_id INT,
+@area_id INT,
+@phone_no BIGINT,
+@Login_pass VARCHAR(50)
+
+AS
+
+BEGIN	
+	INSERT INTO Distributer_Registration_details
+	(First_Name, Last_Name, Gender, City_ID, Area_ID ,Phone_Number, Login_Pass)
+	VALUES(@first_name,@last_name,@gender,@city_id,@area_id,@phone_no, @Login_pass)
+END								
+										
+GO
+
+
+-------------------------------CHECK DISTRIBUTER AVAILABLE -----------------------------------
+CREATE PROCEDURE CHECK_DISTRIBUTER @Fname VARCHAR(50), @Phone_No VARCHAR(10)
+AS
+BEGIN
+	SELECT 1 
+	FROM Distributer_Registration_Details A
+	WHERE A.First_Name = @Fname AND A.Phone_Number = @Phone_No
+END
+
+GO
+
+-----------------------------------------GET AREA INFO-----------------------------------------------------		
+CREATE PROCEDURE Area_info @City_ID INT
+AS 
+BEGIN
+		SELECT Area_ID, Area_Name FROM Area_Details 
+		WHERE City_ID = @City_ID
+END
+GO
+
+
+--------------------------------------GET CITY INFO-------------------------------------------
+CREATE PROCEDURE city_info
+AS
+BEGIN	
+		SELECT City_ID, City_Name 
+		FROM City_Details
+END
+GO
+			
+			
+------------------------------DELETE A DISTRIBUTER---------------------------------------
+CREATE PROCEDURE Delete_Distributer @Phone_No VARCHAR(10), @Fname VARCHAR(50) 
+AS
+BEGIN
+   DELETE FROM Distributer_Registration_details
+   WHERE First_Name = @Fname and Phone_number = @Phone_No
+END
+GO 
+ 
+
+--------------------------------ADMIN LOGIN VALIDATION----------------------------------------			
+														
+CREATE PROCEDURE ADMINLOGIN 
+@ID INT, @PASS VARCHAR(32)
+AS
+BEGIN
+	SELECT 1 
+	FROM Admin_id_pass 
+	WHERE ID= @ID AND PASSWORD= @PASS
+END
+GO
+
+
+---------------------------------DELETE CUSTOMER FAMILY MEMBER---------------------------------
+CREATE PROCEDURE Delete_Customer_Family_Member_Record @Ration_no INT, @Name VARCHAR(50)
+AS
+BEGIN
+ 	DELETE FROM Customer_Family_Details
+ 	WHERE Ration_No = @Ration_no AND First_Name = @Name
+END
+GO
+
+
+ --------------------------------DELETE CUSTOMER'S ALL RECORDS-----------------------------------
+
+ALTER PROCEDURE Delete_Customer_Record @Ration_no INT 
+AS
+BEGIN
+	DELETE FROM Customer_family_details
+ 	WHERE Ration_no = @Ration_no
+
+ 	DELETE FROM Customer_Registration_details
+ 	WHERE Ration_no = @Ration_no
+END
+ 	
+GO
+
+
+ -----------------------------CHECK RATION NUMBER AVAILABLE---------------
+ CREATE PROCEDURE CHECK_RATION_AVAILABLE @Ration_No INT
+ AS
+ BEGIN
+	SELECT 1
+	FROM Customer_Registration_details
+	WHERE Ration_no = @Ration_No
+END
+GO
+
+
+----------------------------ADD FAMILY MEMBER ---------------------
+CREATE PROCEDURE ADD_MEMBER @Fname VARCHAR(50), @Lname VARCHAR(50), @DOB DATE, @Ration_No INT
+AS
+BEGIN
+	INSERT INTO Customer_family_details
+	VALUES(@Fname, @Lname, @DOB, @Ration_No)
+END
+GO
+
+
+
+--------------------------Is Customer Exist ---------------------------
+CREATE PROCEDURE IS_CUSTOMER_EXIST @Phone_No VARCHAR(10)
+AS 
+BEGIN
+	SELECT 1 
+	FROM Customer_Registration_details
+	WHERE Phone_Number = @Phone_No
+END
+GO
+
+
+
+-------------------------IS FAMILY MEMBER EXIST ------------------------
+CREATE PROCEDURE IS_MEMBER_EXIST @FName VARCHAR(50), @DOB DATE, @Ration_No INT
+AS
+BEGIN
+	SELECT 1 
+	FROM Customer_family_details
+	WHERE Ration_no = @Ration_No AND First_Name = @FName AND DOB = @DOB
+END
+GO
+
+
+---------------------------CURRENT MONTH DISTRIBUTION---------------------
+CREATE PROCEDURE CURRENT_MOTNTH_DISTRIBUTION @Ration_No INT
+AS
+BEGIN
+	SELECT A.Ration_no, C.Name,  B.Allocated_Quantity, C.Units, A.dates
+	FROM Transactions A
+	JOIN Allocation B
+	ON A.Transaction_Id = B.Transaction_Id
+	JOIN Item C
+	ON B.Item_id = C.Item_id
+	WHERE A.Ration_no = @Ration_No AND MONTH(A.dates) = MONTH(GETDATE())
+END
+GO
+
+
+
+--------------------------DISTRIBUTION HISTORY----------------------------
+CREATE PROCEDURE DISTRIBUTION_HISTORY @Ration_No INT, @Month INT, @Year INT
+AS
+BEGIN
+	SELECT A.Ration_no, C.Name,  B.Allocated_Quantity, C.Units, A.dates
+	FROM Transactions A
+	JOIN Allocation B
+	ON A.Transaction_Id = B.Transaction_Id
+	JOIN Item C
+	ON B.Item_id = C.Item_id
+	WHERE A.Ration_no = @Ration_No AND MONTH(A.dates) = @Month AND YEAR(A.dates) = @Year
+END
+GO
+
+
+---------------------------DISTRIBUTER LOGIN-------------------
+CREATE PROCEDURE DISTRIBUTER_LOGIN @Phone_No VARCHAR(10), @Pass VARCHAR(10)
+AS
+BEGIN
+	SELECT 1 
+	FROM Distributer_Registration_details
+	WHERE Phone_number = @Phone_No AND Login_pass = @Pass
+END 
+GO
+
+
+-----------------------------IS DISTRIBUTER DELETABLE----------------------
+CREATE PROCEDURE IS_DISTRIBUTER_REMOVABLE @Dist_ID INT
+AS
+BEGIN
+	SELECT 1
+	FROM Customer_Registration_details
+	WHERE Distributer_Id = @Dist_ID
+END
+GO
+
+
+--------------------------CREATE PROCEDURE GET_DIST_ID---------------
+CREATE PROCEDURE GET_DIST_ID @Phone varchar(10), @Fname varchar(50)
+AS
+BEGIN
+	SELECT Distributer_ID
+	FROM Distributer_Registration_details
+	WHERE Phone_number = @Phone and First_Name = @Fname
+END
+GO

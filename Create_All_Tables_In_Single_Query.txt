@@ -1,0 +1,116 @@
+CREATE DATABASE Project
+GO
+
+USE [Project]
+GO
+
+-------------city details-------------
+CREATE TABLE City_Details(
+       City_ID INT NOT NULL PRIMARY KEY IDENTITY (1,1),
+       City_Name VARCHAR(50))
+
+GO
+INSERT INTO City_Details
+VALUES ('Nagpur'),('Mumbai'),('Delhi'),('Kolkata')
+
+GO
+
+----------area details----------------
+CREATE TABLE Area_Details(
+       Area_ID INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+       Area_Name VARCHAR(50),
+       City_ID INT FOREIGN KEY REFERENCES City_Details(City_ID))
+GO
+
+INSERT INTO Area_Details
+VALUES ('Pratap Nagar',1),
+('Gayatri Nagar',1), 
+('Gopal Nagar',2),
+('Shivaji Nagar',2),
+('Jaripatka', 3),
+('Mahal',4)
+
+GO
+
+
+-----------------Distributer_Registration_details-----------------
+CREATE TABLE Distributer_Registration_Details(
+Distributer_ID INT NOT NULL PRIMARY KEY IDENTITY(1000,1),
+First_Name VARCHAR(50), 
+Last_Name VARCHAR(50),
+Gender CHAR,
+City_ID INT FOREIGN KEY REFERENCES city_details(city_ID),
+Area_ID INT FOREIGN KEY REFERENCES area_details(area_ID),
+Phone_Number VARCHAR(10),
+Login_Pass varchar(50)
+)
+
+GO
+
+----------------Customer_Registration_details-------------------
+CREATE TABLE Customer_Registration_Details(
+Ration_No INT NOT NULL PRIMARY KEY IDENTITY(200000,1),
+City INT FOREIGN KEY REFERENCES [dbo].[city_details]([city_ID]),
+Area INT FOREIGN KEY REFERENCES [dbo].[area_details]([area_ID]),
+Phone_Number VARCHAR(10),
+Family_Income MONEY,
+Card_Type VARCHAR(10) CHECK(Card_Type in ('Yellow','White','Saffron')),
+Distributer_ID INT FOREIGN KEY REFERENCES Distributer_Registration_details(Distributer_Id) 
+)
+
+GO
+
+
+------------------admin id pass----------------
+CREATE TABLE Admin_Id_Pass(ID INT, PASSWORD VARCHAR(50))
+GO
+INSERT INTO Admin_id_pass VALUES(101100, 'Admin@123')
+GO
+
+
+--------------------------------Customer_family_details---------------------
+CREATE TABLE Customer_family_details(
+First_Name VARCHAR(50),
+Last_Name VARCHAR(50),
+DOB DATE,
+Ration_no INT NOT NULL FOREIGN KEY REFERENCES Customer_Registration_details(Ration_No)
+)
+
+GO
+
+
+
+---------------------------Item---------------------------------------
+CREATE TABLE Item(
+Item_ID INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+Name VARCHAR(25),
+Units VARCHAR(5)
+)
+GO
+------------------------------Transactions---------------------------------
+CREATE TABLE Transactions(
+Transaction_Id INT PRIMARY KEY NOT NULL IDENTITY(10000,1),
+Ration_No INT NOT NULL FOREIGN KEY REFERENCES Customer_Registration_Details(Ration_No),
+First_Name VARCHAR(50) NOT NULL,
+Dates DATE,
+Distributer_id INT NOT NULL FOREIGN KEY REFERENCES Distributer_Registration_details(Distributer_ID)
+)
+
+GO
+------------------------------Allocation---------------------------------------------------
+CREATE TABLE Allocation (
+Allocation_ID INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+Transaction_ID INT NOT NULL FOREIGN KEY REFERENCES Transactions(Transaction_ID),
+Item_ID INT FOREIGN KEY REFERENCES Item(Item_ID),
+Allocated_Quantity DECIMAL(18,2)
+)
+GO
+
+--------------------------------Inventory--------------------------------------------------------
+CREATE TABLE Inventory(
+Inventory_ID INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+Distributer_ID INT NOT NULL FOREIGN KEY REFERENCES Distributer_Registration_Details(Distributer_ID),
+Item_ID INT NOT NULL FOREIGN KEY REFERENCES Item(Item_ID),
+Quantity DECIMAL(18,2)
+)
+GO
