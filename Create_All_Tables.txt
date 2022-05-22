@@ -1,0 +1,122 @@
+CREATE DATABASE Project
+GO
+
+USE [Project]
+GO
+
+-------------city details-------------
+CREATE TABLE City_Details(
+       City_ID INT NOT NULL PRIMARY KEY IDENTITY (1,1),
+       City_Name VARCHAR(50)
+)
+
+GO
+
+
+----------area details----------------
+CREATE TABLE Area_Details(
+       Area_ID INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+       Area_Name VARCHAR(50),
+       City_ID INT
+)
+GO
+
+
+
+-----------------Distributer_Registration_details-----------------
+CREATE TABLE Distributer_Registration_Details(
+Distributer_ID INT NOT NULL PRIMARY KEY IDENTITY(1000,1),
+First_Name VARCHAR(50), 
+Last_Name VARCHAR(50),
+Gender CHAR,
+City_ID INT,
+Area_ID INT,
+Phone_Number VARCHAR(10),
+Login_Pass varchar(50)
+)
+
+GO
+
+
+
+
+----------------Customer_Registration_details-------------------
+CREATE TABLE Customer_Registration_Details(
+Ration_No INT NOT NULL PRIMARY KEY IDENTITY(200000,1),
+City INT ,
+Area INT ,
+Phone_Number VARCHAR(10),
+Family_Income MONEY,
+Card_Type VARCHAR(10) CHECK(Card_Type in ('Yellow','White','Saffron')),
+Distributer_ID INT,
+Scheme_ID INT DEFAULT 1
+)
+
+GO
+
+
+
+------------------admin id pass----------------
+CREATE TABLE Admin_Id_Pass(ID INT, PASSWORD VARCHAR(50))
+GO
+
+
+--------------------------------Customer_family_details---------------------
+CREATE TABLE Customer_family_details(
+First_Name VARCHAR(50),
+Last_Name VARCHAR(50),
+DOB DATE,
+Ration_no INT NOT NULL
+)
+
+GO
+
+
+---------------------------Item---------------------------------------
+CREATE TABLE Item(
+Item_ID INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+Name VARCHAR(25),
+Units VARCHAR(5),
+Item_Price MONEY
+)
+GO
+------------------------------Transactions---------------------------------
+CREATE TABLE Transactions(
+Transaction_Id INT PRIMARY KEY NOT NULL IDENTITY(10000,1),
+Ration_No INT NOT NULL ,
+First_Name VARCHAR(50) NOT NULL,
+Dates DATE,
+Distributer_id INT NOT NULL,
+Transaction_Amount MONEY
+)
+
+GO
+
+------------------------------Allocation---------------------------------------------------
+CREATE TABLE Allocation (
+Allocation_ID INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+Transaction_ID INT,
+Item_ID INT ,
+Allocated_Quantity DECIMAL(18,2),
+Item_Price MONEY
+)
+GO
+
+--------------------------------Inventory--------------------------------------------------------
+CREATE TABLE Inventory(
+Inventory_ID INT PRIMARY KEY NOT NULL IDENTITY(1,1),
+Distributer_ID INT NOT NULL,
+Item_ID INT NOT NULL ,
+Quantity DECIMAL(18,2)
+)
+GO
+
+
+--------------------------------Schemes and quantity------------------------------------------------
+CREATE TABLE Item_Quantity_By_Schemes (
+Scheme_ID INT NOT NULL,
+Scheme_Name VARCHAR(150) NOT NULL,
+Item_ID INT NOT NULL,
+Item_Quantity_Per_Person DECIMAL(18,2) NOT NULL
+)
+GO
