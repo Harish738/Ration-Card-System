@@ -1,0 +1,88 @@
+USE [Project]
+GO
+
+---------------------------ADMIN ID PASS -----------------------------------
+INSERT INTO Admin_id_pass VALUES(101100, HASHBYTES('SHA2_256','Admin@123'))
+GO
+
+----------------------------------- distributer details -----------------------------------
+INSERT INTO Distributer_Registration_Details
+	(First_Name,Last_Name,Gender,City_ID,Area_ID,Phone_Number,Login_Pass)
+VALUES 
+	('Harish', 'Kanoje', 'M', 1 , 1, 7387734262, HASHBYTES('SHA2_256','Harish@123'))
+GO
+
+
+-----------------------------------Customer Details-----------------------------------
+INSERT INTO Customer_Registration_Details
+	(City,Area,Phone_Number,Family_Income,Card_Type,Distributer_ID,Scheme_ID)
+VALUES
+	(1, 1, 7387734262, 30000, 'Yellow', 1000, 1)
+GO
+
+
+----------------------------------- Customer Family details-----------------------------------
+INSERT INTO Customer_family_details
+	(First_Name,Last_Name,DOB,Ration_no)
+VALUES
+	('Harish', 'Kanoje', 2000-12-17, 200000)
+GO
+
+
+
+
+----------------------------------- Inventory for distributer -----------------------------------
+INSERT INTO Inventory
+	(Distributer_ID, Item_ID, Quantity)
+VALUES
+	(1000, 1, 150),
+	(1000, 2, 160),
+	(1000, 3, 120),
+	(1000, 4, 60)
+GO
+
+
+
+----------------------------------- Area id -----------------------------------
+INSERT INTO Area_Details
+VALUES ('Pratap Nagar',1),
+('Gayatri Nagar',1), 
+('Gopal Nagar',2),
+('Shivaji Nagar',2),
+('Jaripatka', 3),
+('Mahal',4)
+GO
+
+
+----------------------------------- City id-----------------------------------
+INSERT INTO City_Details
+VALUES ('Nagpur'),('Mumbai'),('Delhi'),('Kolkata')
+GO
+
+
+
+----------------------------------- Items details -----------------------------------
+INSERT INTO Item(Name,Units)
+VALUES
+	('Rice','KG'),
+	('Wheat', 'KG'),
+	('Sugar', 'KG'),
+	('Oil', 'L')
+GO
+
+
+----------------------------------- Scheme details-----------------------------------
+INSERT INTO Item_Quantity_By_Schemes
+	(Scheme_ID,Scheme_Name,Item_ID, Item_Quantity_Per_Person)
+VALUES
+	(1, 'General', 1, 4),
+	(1, 'General', 2, 4),
+	(1, 'General', 3, 2),
+	(1, 'General', 4, 2),
+	(2, 'Garib Kalyan Anna Yojna', 1, 5),
+	(2, 'Garib Kalyan Anna Yojna', 2, 5),
+	(2, 'Garib Kalyan Anna Yojna', 3, 2),
+	(2, 'Garib Kalyan Anna Yojna', 4, 2)
+
+GO
+
